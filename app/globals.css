@@ -1,0 +1,422 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/* Design tokens                                                       */
+/* ------------------------------------------------------------------ */
+@theme {
+  /* Named `canvas`, not `base`: a `--color-base` token would make Tailwind's
+     `text-base` utility set a colour instead of a font size. */
+  --color-canvas: #080a0c;
+  --color-surface: #101317;
+  --color-card: #15191e;
+  --color-accent: #fcce07;
+  /* Hover tint: same hue and saturation, lifted lightness, so the accent stays
+     one colour family instead of shifting warm or washing out. */
+  --color-accent-soft: #fde05d;
+  --color-ink: #f7f8f8;
+  --color-muted: #9aa0a6;
+  --color-line: rgb(255 255 255 / 0.1);
+  --color-line-strong: rgb(255 255 255 / 0.18);
+  --color-instagram: #d6249f;
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+
+  --radius-card: 1.25rem;
+
+  /* Small minimums matter: the pinned scrub frames have a fixed height on
+     phones, so oversized headings there push copy out of the safe area. */
+  --text-display: clamp(2rem, 7vw, 4.5rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.03em;
+  --text-headline: clamp(1.5rem, 5vw, 3rem);
+  --text-headline--line-height: 1.15;
+  --text-headline--letter-spacing: -0.02em;
+  --text-lede: clamp(1rem, 1.6vw, 1.175rem);
+  --text-lede--line-height: 1.65;
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                               */
+/* ------------------------------------------------------------------ */
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    /* Deliberately not `smooth`: the browser would animate the scroll across the
+       pinned scroll-scrub sections, dragging their clips through the whole
+       timeline at speed. It also fights ScrollTrigger's own pin corrections.
+       Anchor jumps are handled by AnchorScrollManager instead. */
+    scroll-behavior: auto;
+    /* Offset in-page anchors so the sticky navigation never covers headings.
+       Used when JavaScript has not taken over the anchors yet. */
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    /* `clip` keeps sticky/pinned elements working while blocking sideways scroll. */
+    overflow-x: clip;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: #0a0c0e;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll-scrub video layout                                          */
+/*                                                                    */
+/* Default (no JavaScript / reduced motion / video failure) renders a  */
+/* readable stacked layout: media block first, then every text step    */
+/* in normal document flow.                                           */
+/*                                                                    */
+/* `data-scrub-mode="scrub"` is applied imperatively by                */
+/* ScrollScrubVideo once GSAP is ready. It switches the section to the */
+/* pinned, full-viewport cinematic layout where the steps overlap and  */
+/* cross-fade with scroll progress.                                   */
+/* ------------------------------------------------------------------ */
+@utility scrub-root {
+  position: relative;
+  isolation: isolate;
+}
+
+@utility scrub-stage {
+  position: relative;
+  width: 100%;
+}
+
+@utility scrub-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background-color: var(--color-surface);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@utility scrub-video {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: opacity 400ms ease;
+}
+
+@utility scrub-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding-inline: clamp(1.25rem, 5vw, 4rem);
+  padding-block: clamp(3rem, 8vw, 5rem);
+}
+
+@utility scrub-steps {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 6vw, 4rem);
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+@utility scrub-step {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.scrub-root[data-video-state="error"] .scrub-video {
+  opacity: 0;
+}
+
+/* The safe area for pinned copy lives in custom properties so the phone and
+   short-viewport overrides at the end of this block only change numbers. */
+.scrub-root[data-scrub-mode="scrub"] {
+  --scrub-pad-top: clamp(5rem, 12vh, 7.5rem);
+  --scrub-pad-bottom: clamp(2rem, 8vh, 4rem);
+  --scrub-pad-inline: clamp(1.25rem, 5vw, 4rem);
+}
+
+.scrub-root[data-scrub-mode="scrub"] .scrub-stage {
+  height: 100svh;
+  /* `min()` keeps the pinned stage inside the viewport. A fixed floor made the
+     stage taller than the screen in phone landscape, which cropped the copy. */
+  min-height: min(34rem, 100svh);
+  overflow: hidden;
+}
+
+.scrub-root[data-scrub-mode="scrub"] .scrub-media {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+}
+
+.scrub-root[data-scrub-mode="scrub"] .scrub-overlay {
+  position: absolute;
+  inset: 0;
+  padding-block: var(--scrub-pad-top) var(--scrub-pad-bottom);
+  padding-inline: var(--scrub-pad-inline);
+}
+
+/* Absolutely positioned children resolve against the padding box, so the
+   overlay padding is mirrored here to keep text inside a safe area. */
+/* `width: auto` matters: the stacked layout sets `width: 100%`, and a declared
+   width over-constrains an absolutely positioned box, so the browser drops the
+   right inset. That made the pinned copy a full-width block shifted right by
+   the left gutter, pushing text and buttons off screen. */
+.scrub-root[data-scrub-mode="scrub"] .scrub-steps {
+  position: absolute;
+  display: block;
+  gap: 0;
+  inset-block: var(--scrub-pad-top) var(--scrub-pad-bottom);
+  inset-inline: var(--scrub-pad-inline);
+  width: auto;
+  max-width: none;
+}
+
+.scrub-root[data-scrub-mode="scrub"] .scrub-step {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+/* Phones: the nav is 4rem tall here, so the generous desktop gutters only ate
+   into the space the copy needs. */
+@media (max-width: 767px) {
+  .scrub-root[data-scrub-mode="scrub"] {
+    --scrub-pad-top: 4.75rem;
+    --scrub-pad-bottom: max(1.25rem, env(safe-area-inset-bottom));
+    --scrub-pad-inline: 1.25rem;
+  }
+}
+
+/* Short viewports, mainly phone landscape. The frame height is fixed here, so
+   the type scale and the gaps between the copy blocks are stepped down inside
+   the pinned sections only: at 375px tall the desktop rhythm does not fit. */
+@media (max-height: 620px) {
+  .scrub-root[data-scrub-mode="scrub"] {
+    --scrub-pad-top: 4rem;
+    --scrub-pad-bottom: 1rem;
+    --text-display: clamp(1.75rem, 4.5vw, 2.5rem);
+    --text-headline: clamp(1.375rem, 3.5vw, 2rem);
+    --text-lede: 0.95rem;
+  }
+
+  /* Each step holds a single flex column of copy. */
+  .scrub-root[data-scrub-mode="scrub"] .scrub-step > * {
+    gap: 0.75rem;
+  }
+
+  .scrub-root[data-scrub-mode="scrub"] .scroll-cue {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Small shared helpers                                               */
+/* ------------------------------------------------------------------ */
+@utility text-balance-tight {
+  text-wrap: balance;
+}
+
+@utility shell {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 2.5rem);
+}
+
+/* ------------------------------------------------------------------ */
+/* Navigation                                                         */
+/* ------------------------------------------------------------------ */
+.site-nav {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 60;
+  border-bottom: 1px solid transparent;
+  background-color: transparent;
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    backdrop-filter 300ms ease;
+}
+
+.site-nav.is-scrolled {
+  background-color: rgb(8 10 12 / 0.86);
+  border-bottom-color: var(--color-line);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+.menu-panel {
+  animation: menu-in 240ms ease-out;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Floating Instagram button                                          */
+/* ------------------------------------------------------------------ */
+.floating-cta {
+  position: fixed;
+  z-index: 50;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  animation: floating-in 500ms ease-out 700ms both;
+}
+
+@keyframes floating-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Decorative accents                                                 */
+/* ------------------------------------------------------------------ */
+@utility grid-lines {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+@utility glow-accent {
+  background: radial-gradient(
+    60% 60% at 50% 0%,
+    rgb(252 206 7 / 0.14) 0%,
+    transparent 70%
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero scroll cue                                                    */
+/* ------------------------------------------------------------------ */
+.scroll-cue {
+  animation: scroll-cue 2.4s ease-in-out infinite;
+}
+
+@keyframes scroll-cue {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate3d(0, 6px, 0);
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Coaching method stage rail                                         */
+/* ------------------------------------------------------------------ */
+.method-rail {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  margin-top: clamp(2rem, 6vw, 3rem);
+}
+
+.method-stage {
+  opacity: 0.55;
+  transition:
+    opacity 400ms ease,
+    transform 400ms ease;
+}
+
+.method-stage[data-active="true"] {
+  opacity: 1;
+}
+
+/* The rail clears the floating Instagram button (3.5rem tall plus a 1rem
+   inset), which otherwise sits on top of the progress line and the last
+   stage. */
+.scrub-root[data-scrub-mode="scrub"] {
+  --method-rail-bottom: clamp(5rem, 8vh, 6rem);
+  --method-steps-bottom: clamp(10rem, 22vh, 12rem);
+}
+
+/* Same over-constraint as the steps: the declared width has to be released for
+   both inline insets to take effect. */
+.scrub-root[data-scrub-mode="scrub"] .method-rail {
+  position: absolute;
+  inset-inline: var(--scrub-pad-inline);
+  bottom: var(--method-rail-bottom);
+  width: auto;
+  margin-top: 0;
+}
+
+/* Keep the pinned copy clear of the stage rail. */
+.scrub-root[data-scrub-mode="scrub"] .method-steps {
+  inset-block-end: var(--method-steps-bottom);
+}
+
+@media (max-width: 767px) {
+  /* Lift the rail above the floating Instagram button, which otherwise sits on
+     top of the fourth stage in the bottom-right corner. */
+  .scrub-root[data-scrub-mode="scrub"] {
+    --method-rail-bottom: 5.25rem;
+    --method-steps-bottom: 9.5rem;
+  }
+}
+
+/* Short viewports give the whole frame to the copy. The rail is decorative
+   here: every step already names itself in its eyebrow ("Step 01 Â· Assess"). */
+@media (max-height: 620px) {
+  .scrub-root[data-scrub-mode="scrub"] {
+    --method-steps-bottom: var(--scrub-pad-bottom);
+  }
+
+  .scrub-root[data-scrub-mode="scrub"] .method-rail {
+    display: none;
+  }
+}
