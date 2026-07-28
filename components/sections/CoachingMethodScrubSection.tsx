@@ -51,6 +51,7 @@ export function CoachingMethodScrubSection() {
         src={scrubMedia.method.video}
         poster={scrubMedia.method.poster}
         objectPosition={scrubMedia.method.objectPosition}
+        mobileObjectPosition={scrubMedia.method.objectPositionMobile}
         desktopScrollLength={scrubScrollLengths.method.desktop}
         mobileScrollLength={scrubScrollLengths.method.mobile}
         onProgress={handleProgress}

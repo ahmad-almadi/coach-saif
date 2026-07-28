@@ -126,7 +126,20 @@
   height: 100%;
   width: 100%;
   object-fit: cover;
+  /* Both variables are set inline by ScrollScrubVideo, per clip. */
+  object-position: var(--scrub-object-position, 50% 50%);
   transition: opacity 400ms ease;
+}
+
+/* Phones crop the 16:9 clip hard from the sides, so a clip framed for wide
+   screens can lose its subject. Sections may pass a separate phone framing. */
+@media (max-width: 767px) {
+  .scrub-video {
+    object-position: var(
+      --scrub-object-position-mobile,
+      var(--scrub-object-position, 50% 50%)
+    );
+  }
 }
 
 @utility scrub-overlay {

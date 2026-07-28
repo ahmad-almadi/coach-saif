@@ -48,6 +48,9 @@ export const scrubMedia = {
     video: "/videos/fitness-method.mp4",
     poster: "/posters/fitness-method.webp",
     objectPosition: "60% 45%",
+    // Phones crop the 16:9 clip hard from the sides, and the desktop offset
+    // pushed the subject off frame, so the clip is centred there instead.
+    objectPositionMobile: "50% 50%",
   },
   results: {
     video: "/videos/fitness-results.mp4",

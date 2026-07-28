@@ -14,6 +14,12 @@ type ScrollScrubVideoProps = {
   children?: React.ReactNode;
   /** object-position for the clip, so the subject stays visible when cropped. */
   objectPosition?: string;
+  /**
+   * object-position used on phones (max-width: 767px). The portrait crop is
+   * far tighter than the desktop one, so a clip framed for wide screens can
+   * lose its subject. Defaults to `objectPosition`.
+   */
+  mobileObjectPosition?: string;
   /** Optional extra scrim/gradient layers rendered above the video. */
   scrim?: React.ReactNode;
   /**
@@ -50,6 +56,7 @@ export function ScrollScrubVideo({
   mobileScrollLength = "+=140%",
   children,
   objectPosition = "50% 50%",
+  mobileObjectPosition,
   scrim,
   onProgress,
   priority = false,
@@ -363,7 +370,16 @@ export function ScrollScrubVideo({
           <video
             ref={videoRef}
             className="scrub-video"
-            style={{ objectPosition }}
+            /* Custom properties instead of `object-position` directly: an
+               inline declaration cannot be overridden by the phone media
+               query in globals.css, a variable can. */
+            style={
+              {
+                "--scrub-object-position": objectPosition,
+                "--scrub-object-position-mobile":
+                  mobileObjectPosition ?? objectPosition,
+              } as React.CSSProperties
+            }
             poster={poster}
             muted
             playsInline

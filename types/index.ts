@@ -125,4 +125,10 @@ export interface ScrubMedia {
   poster: string;
   /** object-position for the video, tuned per clip and breakpoint. */
   objectPosition: string;
+  /**
+   * Optional object-position used on phones (max-width: 767px), where the
+   * portrait crop is much tighter than the desktop one. Falls back to
+   * `objectPosition` when omitted.
+   */
+  objectPositionMobile?: string;
 }
