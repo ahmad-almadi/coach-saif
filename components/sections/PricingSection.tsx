@@ -3,14 +3,18 @@
 import { useState } from "react";
 import { ShieldCheck } from "lucide-react";
 
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { PricingCard } from "@/components/sections/PricingCard";
 import { PricingPeriodToggle } from "@/components/shared/PricingPeriodToggle";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { InstagramButton } from "@/components/shared/InstagramButton";
 import { QUARTER_MONTHS, pricingPlans } from "@/data/pricing";
+import { ui } from "@/data/ui";
+import { fill } from "@/lib/i18n";
 import type { BillingPeriod } from "@/types";
 
 export function PricingSection() {
+  const { t } = useLanguage();
   const [period, setPeriod] = useState<BillingPeriod>("monthly");
 
   return (
@@ -19,9 +23,9 @@ export function PricingSection() {
         <div className="flex flex-col items-center gap-8">
           <SectionHeading
             id="plans-title"
-            eyebrow="Coaching packages"
-            title="Choose the Level of Support You Need"
-            description="Every package includes a personalised programme. The difference is how much feedback, guidance and direct contact you receive along the way."
+            eyebrow={t(ui.pricing.eyebrow)}
+            title={t(ui.pricing.title)}
+            description={t(ui.pricing.description)}
             align="center"
           />
 
@@ -34,18 +38,15 @@ export function PricingSection() {
           ))}
         </div>
 
-        <div className="mt-8 flex flex-col items-center gap-4 rounded-card border border-line bg-surface/60 p-6 text-center sm:mt-10 sm:flex-row sm:text-left">
+        <div className="mt-8 flex flex-col items-center gap-4 rounded-card border border-line bg-surface/60 p-6 text-center sm:mt-10 sm:flex-row sm:text-start">
           <ShieldCheck aria-hidden="true" className="size-6 shrink-0 text-accent" />
 
           <p className="text-sm leading-relaxed text-muted">
-            All prices are in Jordanian dinars. Coaching runs month to month, and
-            the {QUARTER_MONTHS}-month option is simply paid once for a longer
-            block. Not sure which package fits? Send a message and your coach
-            will help you decide.
+            {fill(t(ui.pricing.note), { months: QUARTER_MONTHS })}
           </p>
 
           <InstagramButton
-            label="Ask Before You Choose"
+            label={t(ui.pricing.cta)}
             variant="outline"
             className="w-full shrink-0 sm:w-auto"
           />

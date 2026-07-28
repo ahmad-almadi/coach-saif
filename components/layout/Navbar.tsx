@@ -6,12 +6,16 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { MobileMenu } from "@/components/layout/MobileMenu";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { InstagramButton } from "@/components/shared/InstagramButton";
+import { LanguageToggle } from "@/components/shared/LanguageToggle";
 import { Logo } from "@/components/shared/Logo";
 import { navLinks, siteConfig } from "@/config/site";
+import { ui } from "@/data/ui";
 import { cn } from "@/lib/cn";
 
 export function Navbar() {
+  const { t } = useLanguage();
   const headerRef = useRef<HTMLElement | null>(null);
   const toggleRef = useRef<HTMLButtonElement | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -77,9 +81,9 @@ export function Navbar() {
     <>
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[80] focus:rounded-full focus:bg-accent focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#0a0c0e]"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-[80] focus:rounded-full focus:bg-accent focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#0a0c0e]"
       >
-        Skip to content
+        {t(ui.nav.skipToContent)}
       </a>
 
       <header ref={headerRef} className="site-nav">
@@ -88,19 +92,22 @@ export function Navbar() {
               actions when the row runs out of space on narrow screens. */}
           <a
             href="#top"
-            className="flex min-w-0 items-center gap-2.5 text-base font-extrabold tracking-tight"
+            className="flex min-w-0 items-center gap-2.5 text-lg font-extrabold tracking-tight sm:text-xl"
           >
-            <Logo priority />
+            <Logo priority className="h-10 w-auto sm:h-11" />
 
-            <span className="flex min-w-0 flex-col gap-1 leading-none">
-              <span className="truncate">{siteConfig.name}</span>
-              <span className="truncate text-[0.65rem] font-medium tracking-[0.14em] text-muted uppercase">
-                Online Coaching
+            {/* `leading-tight` rather than `leading-none`: Arabic glyphs sit
+                below the baseline, and a line box the size of the font clipped
+                them against the `truncate` overflow. */}
+            <span className="flex min-w-0 flex-col leading-tight">
+              <span className="truncate">{t(siteConfig.name)}</span>
+              <span className="truncate text-[0.7rem] font-medium leading-normal tracking-[0.12em] text-muted uppercase sm:text-xs">
+                {t(siteConfig.wordmarkKicker)}
               </span>
             </span>
           </a>
 
-          <nav aria-label="Main" className="hidden md:block">
+          <nav aria-label={t(ui.nav.mainLabel)} className="hidden md:block">
             <ul className="flex items-center gap-1">
               {navLinks.map((link) => {
                 const isActive = link.href === activeHref;
@@ -117,7 +124,7 @@ export function Navbar() {
                           : "text-muted",
                       )}
                     >
-                      {link.label}
+                      {t(link.label)}
                     </a>
                   </li>
                 );
@@ -126,6 +133,10 @@ export function Navbar() {
           </nav>
 
           <div className="flex shrink-0 items-center gap-2">
+            {/* Kept visible at every breakpoint: switching language is the one
+                action a visitor may need before they can read anything else. */}
+            <LanguageToggle />
+
             {/* Held back until `lg`. Below that the row is too tight: the label
                 wrapped onto two lines and overlapped the wordmark. Phones reach
                 the same action through the menu and the floating button.
@@ -134,7 +145,7 @@ export function Navbar() {
                 that `buttonClass` always applies. */}
             <span className="hidden lg:inline-flex">
               <InstagramButton
-                label="Start Coaching"
+                label={t(ui.nav.headerCta)}
                 size="sm"
                 className="whitespace-nowrap"
               />
@@ -149,7 +160,7 @@ export function Navbar() {
               className="inline-flex size-11 items-center justify-center rounded-full border border-line bg-white/[0.04] text-ink transition-colors duration-200 hover:border-line-strong md:hidden"
             >
               <Menu aria-hidden="true" className="size-5" />
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">{t(ui.nav.openMenu)}</span>
             </button>
           </div>
         </div>

@@ -1,8 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
+import { cookies } from "next/headers";
+import { Cairo, Manrope } from "next/font/google";
 import { config } from "@fortawesome/fontawesome-svg-core";
 
+import { LanguageProvider } from "@/components/providers/LanguageProvider";
+import { ScrollTriggerRefresh } from "@/components/shared/ScrollTriggerRefresh";
 import { siteConfig } from "@/config/site";
+import {
+  LANGUAGE_COOKIE,
+  languageDirection,
+  toLanguage,
+  type Language,
+} from "@/lib/i18n";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "./globals.css";
@@ -31,23 +40,61 @@ const manrope = Manrope({
   preload: false,
 });
 
-export const metadata: Metadata = {
-  title: `${siteConfig.name} | ${siteConfig.tagline}`,
-  description:
-    "Online personal training and coaching. Personalised programmes, practical nutrition guidance and weekly accountability, delivered remotely.",
-};
+/**
+ * Arabic face. Manrope has no Arabic coverage, so without this the Arabic
+ * version falls back to a system font and loses the display weights the
+ * headings rely on. Applied through `dir="rtl"` in globals.css.
+ */
+const cairo = Cairo({
+  subsets: ["arabic"],
+  display: "swap",
+  variable: "--font-cairo",
+  preload: false,
+});
+
+/** The language for this request, from the cookie the toggle writes. */
+async function getLanguage(): Promise<Language> {
+  const store = await cookies();
+
+  return toLanguage(store.get(LANGUAGE_COOKIE)?.value);
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const language = await getLanguage();
+
+  const description = {
+    en: "Online personal training and coaching. Personalised programs, practical nutrition guidance and weekly accountability, delivered remotely.",
+    ar: "تدريب شخصي وإشراف رياضي عن بُعد. برامج مخصّصة، إرشاد غذائي عملي ومتابعة أسبوعية، تُقدّم عن بُعد.",
+  } as const;
+
+  return {
+    title: `${siteConfig.name[language]} | ${siteConfig.tagline[language]}`,
+    description: description[language],
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#080a0c",
   colorScheme: "dark",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const language = await getLanguage();
+
   return (
-    <html lang="en" className={manrope.variable}>
-      <body className="min-h-svh antialiased">{children}</body>
+    <html
+      lang={language}
+      dir={languageDirection[language]}
+      className={`${manrope.variable} ${cairo.variable}`}
+    >
+      <body className="min-h-svh antialiased">
+        <LanguageProvider initialLanguage={language}>
+          <ScrollTriggerRefresh />
+          {children}
+        </LanguageProvider>
+      </body>
     </html>
   );
 }

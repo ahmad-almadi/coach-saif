@@ -1,34 +1,62 @@
+import type { Localized } from "@/lib/i18n";
 import type { NavLink, ScrubMedia } from "@/types";
 
-/** Central site configuration: business details, nav and scrub media. */
+/**
+ * Central site configuration: business details, nav and scrub media.
+ *
+ * Text that a visitor reads is stored as `{ en, ar }` and resolved through
+ * `useLanguage().t`. Anything technical (URLs, file paths, ratios) stays flat.
+ */
 export const siteConfig = {
-  name: "Coach Saif",
-  tagline: "Online Personal Training & Coaching",
-  coachName: "Saif",
-  location: "Amman, Jordan",
+  name: {
+    en: "Coach Saif",
+    ar: "كوتش سيف",
+  } satisfies Localized<string>,
+  tagline: {
+    en: "Online Personal Training & Coaching",
+    ar: "تدريب شخصي وإشراف رياضي عن بعد",
+  } satisfies Localized<string>,
+  /** Small line under the wordmark in the header. */
+  wordmarkKicker: {
+    en: "Online Coaching",
+    ar: "تدريب عن بعد",
+  } satisfies Localized<string>,
+  coachName: {
+    en: "Saif",
+    ar: "سيف",
+  } satisfies Localized<string>,
+  location: {
+    en: "Amman, Jordan",
+    ar: "عمّان، الأردن",
+  } satisfies Localized<string>,
   email: "saifolifts@gmail.com",
   /**
    * Transparent logo mark in /public, produced from images/logo.jpg by
    * scripts/logo-transparent.ps1. Set to null to fall back to the monogram.
    */
   logo: "/images/logo.png" as string | null,
-  /** Intrinsic width / height of `logo`, so the mark is requested sharp. */
-  logoAspectRatio: 235 / 139,
+  /**
+   * Intrinsic pixel size of `logo`. Passed straight to next/image so the
+   * declared ratio always matches the file's own ratio: mismatched values make
+   * `next/image` warn that width or height was modified without the other.
+   */
+  logoWidth: 235,
+  logoHeight: 139,
   /** Fallback badge shown when `logo` is null. */
   monogram: "CS",
   /** Instagram is the single contact channel: every CTA on the site opens it. */
   instagramHandle: "@saifolifts",
-  instagramUrl: "https://www.instagram.com/saifolifts/",
+  instagramUrl: "https://www.instagram.com/direct/t/17848855125378481/",
   privacyUrl: "#",
   termsUrl: "#",
 } as const;
 
 export const navLinks: NavLink[] = [
-  { label: "Home", href: "#top" },
-  { label: "Coaching", href: "#coaching" },
-  { label: "Results", href: "#results" },
-  { label: "Plans", href: "#plans" },
-  { label: "FAQ", href: "#faq" },
+  { label: { en: "Home", ar: "الرئيسية" }, href: "#top" },
+  { label: { en: "Coaching", ar: "طريقة العمل" }, href: "#coaching" },
+  // { label: { en: "Results", ar: "النتائج" }, href: "#results" },
+  { label: { en: "Plans", ar: "الباقات" }, href: "#plans" },
+  { label: { en: "FAQ", ar: "الأسئلة الشائعة" }, href: "#faq" },
 ];
 
 /**

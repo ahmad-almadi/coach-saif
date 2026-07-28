@@ -1,9 +1,14 @@
+"use client";
+
 import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { Logo } from "@/components/shared/Logo";
 import { navLinks, siteConfig } from "@/config/site";
+import { ui } from "@/data/ui";
+import { fill } from "@/lib/i18n";
 import { buildInstagramUrl } from "@/lib/instagram";
 
 const socialLinks = [
@@ -11,6 +16,7 @@ const socialLinks = [
 ] as const;
 
 export function Footer() {
+  const { t } = useLanguage();
   const year = new Date().getFullYear();
 
   return (
@@ -19,16 +25,16 @@ export function Footer() {
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)]">
           <div className="flex flex-col gap-4">
             <span className="flex items-center gap-2.5">
-              <Logo size={40} className="h-10" />
+              <Logo className="h-10" />
               <span className="text-base font-extrabold tracking-tight">
-                {siteConfig.name}
+                {t(siteConfig.name)}
               </span>
             </span>
 
             <p className="max-w-sm text-sm leading-relaxed text-muted">
-              Online personal training and coaching based in{" "}
-              {siteConfig.location}. Personalised programmes, practical
-              nutrition guidance and weekly accountability, delivered remotely.
+              {fill(t(ui.footer.description), {
+                location: t(siteConfig.location),
+              })}
             </p>
 
             <div className="flex items-center gap-2">
@@ -46,16 +52,16 @@ export function Footer() {
                     className="size-4"
                   />
                   <span className="sr-only">
-                    {social.label} (opens in a new tab)
+                    {`${social.label}${t(ui.common.opensNewTab)}`}
                   </span>
                 </a>
               ))}
             </div>
           </div>
 
-          <nav aria-label="Footer" className="flex flex-col gap-3">
+          <nav aria-label={t(ui.footer.navLabel)} className="flex flex-col gap-3">
             <h2 className="text-[0.7rem] font-semibold tracking-[0.14em] text-muted uppercase">
-              Explore
+              {t(ui.footer.exploreLabel)}
             </h2>
 
             <ul className="flex flex-col gap-2.5">
@@ -65,7 +71,7 @@ export function Footer() {
                     href={link.href}
                     className="text-sm text-muted transition-colors duration-200 hover:text-ink"
                   >
-                    {link.label}
+                    {t(link.label)}
                   </a>
                 </li>
               ))}
@@ -74,7 +80,7 @@ export function Footer() {
 
           <div className="flex flex-col gap-3">
             <h2 className="text-[0.7rem] font-semibold tracking-[0.14em] text-muted uppercase">
-              Contact
+              {t(ui.footer.contactLabel)}
             </h2>
 
             <a
@@ -88,8 +94,9 @@ export function Footer() {
                 aria-hidden="true"
                 className="size-4"
               />
-              {siteConfig.instagramHandle}
-              <span className="sr-only"> (opens Instagram in a new tab)</span>
+              {/* Latin handle: pinned to LTR so the `@` stays in front of it. */}
+              <span dir="ltr">{siteConfig.instagramHandle}</span>
+              <span className="sr-only">{t(ui.common.opensInstagram)}</span>
             </a>
 
             <a
@@ -101,7 +108,7 @@ export function Footer() {
                 aria-hidden="true"
                 className="size-4"
               />
-              {siteConfig.email}
+              <span dir="ltr">{siteConfig.email}</span>
             </a>
 
             <ul className="mt-2 flex flex-col gap-2.5">
@@ -110,7 +117,7 @@ export function Footer() {
                   href={siteConfig.privacyUrl}
                   className="text-sm text-muted transition-colors duration-200 hover:text-ink"
                 >
-                  Privacy Policy
+                  {t(ui.footer.privacy)}
                 </a>
               </li>
               <li>
@@ -118,7 +125,7 @@ export function Footer() {
                   href={siteConfig.termsUrl}
                   className="text-sm text-muted transition-colors duration-200 hover:text-ink"
                 >
-                  Terms and Conditions
+                  {t(ui.footer.terms)}
                 </a>
               </li>
             </ul>
@@ -127,13 +134,13 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted">
-            {`© ${year} ${siteConfig.name}. All rights reserved.`}
+            {fill(t(ui.footer.copyright), {
+              year,
+              name: t(siteConfig.name),
+            })}
           </p>
 
-          <p className="text-xs text-muted">
-            Coaching does not replace medical advice. Speak to a qualified health
-            professional before starting a new training programme.
-          </p>
+          <p className="text-xs text-muted">{t(ui.footer.disclaimer)}</p>
         </div>
       </div>
     </footer>

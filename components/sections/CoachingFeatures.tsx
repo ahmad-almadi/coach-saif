@@ -1,11 +1,17 @@
+"use client";
+
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { Reveal } from "@/components/shared/Reveal";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { InstagramButton } from "@/components/shared/InstagramButton";
 import { coachingFeatures } from "@/data/features";
+import { ui } from "@/data/ui";
 import { cardClass, cardHoverClass } from "@/lib/ui";
 import { cn } from "@/lib/cn";
 
 export function CoachingFeatures() {
+  const { t } = useLanguage();
+
   return (
     <section
       aria-labelledby="features-title"
@@ -15,13 +21,13 @@ export function CoachingFeatures() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading
             id="features-title"
-            eyebrow="What you receive"
-            title="Everything Included in Your Coaching"
-            description="Each package is built from the same foundation: a plan you can follow, feedback you can act on and support when your week does not go as expected."
+            eyebrow={t(ui.features.eyebrow)}
+            title={t(ui.features.title)}
+            description={t(ui.features.description)}
           />
 
           <InstagramButton
-            label="Ask What Suits You"
+            label={t(ui.features.cta)}
             variant="outline"
             size="md"
             className="self-start lg:self-auto"
@@ -51,11 +57,11 @@ export function CoachingFeatures() {
                 </span>
 
                 <h3 className="text-base font-bold tracking-tight">
-                  {feature.title}
+                  {t(feature.title)}
                 </h3>
 
                 <p className="text-sm leading-relaxed text-muted">
-                  {feature.description}
+                  {t(feature.description)}
                 </p>
               </article>
             );

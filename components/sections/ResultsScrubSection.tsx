@@ -1,11 +1,18 @@
+"use client";
+
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { ScrollScrubVideo } from "@/components/shared/ScrollScrubVideo";
 import { ScrubStep, ScrubSteps } from "@/components/shared/ScrubSteps";
 import { InstagramButton } from "@/components/shared/InstagramButton";
 import { scrubMedia, scrubScrollLengths } from "@/config/site";
 import { resultsMessages } from "@/data/results";
+import { ui } from "@/data/ui";
+import { fill } from "@/lib/i18n";
 import { eyebrowClass } from "@/lib/ui";
 
 export function ResultsScrubSection() {
+  const { t } = useLanguage();
+
   return (
     <section id="results" aria-labelledby="results-title" className="relative">
       <ScrollScrubVideo
@@ -26,7 +33,9 @@ export function ResultsScrubSection() {
             <ScrubStep key={message.id} align="center" className="justify-center">
               <div className="flex w-full max-w-3xl flex-col items-center gap-4 text-center">
                 <span className={eyebrowClass}>
-                  {`The client journey · 0${index + 1}`}
+                  {fill(t(ui.results.eyebrow), {
+                    index: `0${index + 1}`,
+                  })}
                 </span>
 
                 {index === 0 ? (
@@ -34,16 +43,16 @@ export function ResultsScrubSection() {
                     id="results-title"
                     className="text-display font-extrabold text-balance-tight"
                   >
-                    {message.headline}
+                    {t(message.headline)}
                   </h2>
                 ) : (
                   <h3 className="text-display font-extrabold text-balance-tight">
-                    {message.headline}
+                    {t(message.headline)}
                   </h3>
                 )}
 
                 <p className="text-lede max-w-xl text-ink/80">
-                  {message.support}
+                  {t(message.support)}
                 </p>
               </div>
             </ScrubStep>
@@ -52,16 +61,15 @@ export function ResultsScrubSection() {
           <ScrubStep align="center" className="justify-center">
             <div className="flex w-full max-w-2xl flex-col items-center gap-5 text-center">
               <h3 className="text-headline font-extrabold text-balance-tight">
-                Your Next Chapter Starts Here.
+                {t(ui.results.closingTitle)}
               </h3>
 
               <p className="text-lede text-ink/80">
-                Tell your coach where you are now, where you want to go and what
-                has been holding you back.
+                {t(ui.results.closingLede)}
               </p>
 
               <InstagramButton
-                label="Start on Instagram"
+                label={t(ui.results.cta)}
                 size="lg"
                 className="w-full sm:w-auto"
               />

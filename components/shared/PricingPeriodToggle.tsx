@@ -1,6 +1,8 @@
 "use client";
 
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { billingPeriods } from "@/data/pricing";
+import { ui } from "@/data/ui";
 import { cn } from "@/lib/cn";
 import type { BillingPeriod } from "@/types";
 
@@ -17,12 +19,14 @@ export function PricingPeriodToggle({
   value,
   onChange,
 }: PricingPeriodToggleProps) {
+  const { t } = useLanguage();
+
   return (
     // Full width on phones so the two options split the row evenly instead of
     // overflowing once the savings hint is added.
     <div
       role="radiogroup"
-      aria-label="Billing period"
+      aria-label={t(ui.pricing.periodLabel)}
       className="flex w-full max-w-xs items-center gap-1 rounded-full border border-line bg-white/[0.04] p-1 sm:inline-flex sm:w-auto sm:max-w-none"
     >
       {billingPeriods.map((period) => {
@@ -42,7 +46,7 @@ export function PricingPeriodToggle({
                 : "text-muted hover:text-ink",
             )}
           >
-            {period.label}
+            {t(period.label)}
             {period.hint ? (
               <span
                 className={cn(
@@ -52,7 +56,7 @@ export function PricingPeriodToggle({
                     : "bg-accent/12 text-accent",
                 )}
               >
-                {period.hint}
+                {t(period.hint)}
               </span>
             ) : null}
           </button>

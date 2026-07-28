@@ -1,7 +1,11 @@
+"use client";
+
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { Reveal } from "@/components/shared/Reveal";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { TransformationCard } from "@/components/sections/TransformationCard";
 import { transformations } from "@/data/transformations";
+import { ui } from "@/data/ui";
 
 /**
  * Client progress cards.
@@ -14,6 +18,8 @@ import { transformations } from "@/data/transformations";
  * approved client results before launch.
  */
 export function Transformations() {
+  const { t } = useLanguage();
+
   if (transformations.length === 0) {
     return null;
   }
@@ -26,9 +32,9 @@ export function Transformations() {
       <div className="shell py-16 sm:py-20 lg:py-24">
         <SectionHeading
           id="transformations-title"
-          eyebrow="Client progress"
-          title="Real Clients, Real Consistency"
-          description="Every result below came from following a plan that fit the person: their schedule, their starting point and the equipment they actually have."
+          eyebrow={t(ui.transformations.eyebrow)}
+          title={t(ui.transformations.title)}
+          description={t(ui.transformations.description)}
         />
 
         <Reveal
@@ -48,8 +54,7 @@ export function Transformations() {
         </Reveal>
 
         <p className="mt-5 text-xs text-muted">
-          Results vary from person to person. Photos are shared with client
-          permission.
+          {t(ui.transformations.disclaimer)}
         </p>
       </div>
     </section>

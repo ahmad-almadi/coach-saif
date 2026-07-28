@@ -1,13 +1,19 @@
+"use client";
+
 import Image from "next/image";
 import { BadgeCheck, User } from "lucide-react";
 
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { Reveal } from "@/components/shared/Reveal";
 import { InstagramButton } from "@/components/shared/InstagramButton";
 import { coachHighlights, coachProfile } from "@/data/coach";
+import { ui } from "@/data/ui";
 import { cardClass, eyebrowClass } from "@/lib/ui";
 import { cn } from "@/lib/cn";
 
 export function CoachSection() {
+  const { t } = useLanguage();
+
   return (
     <section aria-labelledby="coach-title" className="relative bg-canvas">
       <div className="shell py-16 sm:py-20 lg:py-24">
@@ -18,7 +24,7 @@ export function CoachSection() {
               {coachProfile.image ? (
                 <Image
                   src={coachProfile.image}
-                  alt={coachProfile.imageAlt}
+                  alt={t(coachProfile.imageAlt)}
                   fill
                   sizes="(min-width: 1024px) 40vw, 90vw"
                   className="object-cover"
@@ -28,7 +34,7 @@ export function CoachSection() {
                   <span className="flex flex-col items-center gap-3 px-6 text-center">
                     <User aria-hidden="true" className="size-8 text-muted" />
                     <span className="text-sm text-muted">
-                      Add a coach photo at /public/images/coach.webp
+                      {t(ui.coach.imagePlaceholder)}
                     </span>
                   </span>
                 </div>
@@ -42,12 +48,12 @@ export function CoachSection() {
               )}
             >
               {coachHighlights.map((highlight) => (
-                <div key={highlight.label} className="flex flex-col gap-1">
+                <div key={highlight.label.en} className="flex flex-col gap-1">
                   <span className="text-[0.7rem] font-semibold tracking-[0.14em] text-muted uppercase">
-                    {highlight.label}
+                    {t(highlight.label)}
                   </span>
                   <span className="text-sm font-semibold text-ink">
-                    {highlight.value}
+                    {t(highlight.value)}
                   </span>
                 </div>
               ))}
@@ -55,25 +61,25 @@ export function CoachSection() {
           </div>
 
           <div className="flex flex-col gap-5">
-            <span className={eyebrowClass}>About your coach</span>
+            <span className={eyebrowClass}>{t(ui.coach.eyebrow)}</span>
 
             <h2
               id="coach-title"
               className="text-headline font-extrabold text-balance-tight"
             >
-              Coaching Built Around You
+              {t(ui.coach.title)}
             </h2>
 
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <span className="text-lg font-bold tracking-tight">
-                {coachProfile.name}
+                {t(coachProfile.name)}
               </span>
-              <span className="text-sm text-muted">{coachProfile.role}</span>
+              <span className="text-sm text-muted">{t(coachProfile.role)}</span>
             </div>
 
-            <p className="text-lede text-muted">{coachProfile.intro}</p>
+            <p className="text-lede text-muted">{t(coachProfile.intro)}</p>
 
-            {coachProfile.philosophy.map((paragraph) => (
+            {t(coachProfile.philosophy).map((paragraph) => (
               <p key={paragraph} className="text-lede text-ink/85">
                 {paragraph}
               </p>
@@ -81,18 +87,18 @@ export function CoachSection() {
 
             <div
               className={cn(cardClass, "flex flex-col gap-3 p-5")}
-              aria-label="Qualifications"
+              aria-label={t(ui.coach.qualificationsLabel)}
             >
               <span className="text-[0.7rem] font-semibold tracking-[0.14em] text-muted uppercase">
-                Qualifications and experience
+                {t(ui.coach.qualificationsLabel)}
               </span>
 
               <p className="text-sm text-muted">
-                {coachProfile.yearsOfExperience}
+                {t(coachProfile.yearsOfExperience)}
               </p>
 
               <ul className="flex flex-col gap-2">
-                {coachProfile.qualifications.map((qualification, index) => (
+                {t(coachProfile.qualifications).map((qualification, index) => (
                   <li
                     key={`${index}-${qualification}`}
                     className="flex items-start gap-2.5 text-sm text-ink/85"
@@ -108,10 +114,7 @@ export function CoachSection() {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              <InstagramButton
-                label="Message the Coach"
-                size="lg"
-              />
+              <InstagramButton label={t(ui.coach.cta)} size="lg" />
             </div>
           </div>
         </Reveal>

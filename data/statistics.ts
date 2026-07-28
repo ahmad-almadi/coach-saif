@@ -4,22 +4,22 @@ import type { TrustStat } from "@/types";
 export const trustStats: TrustStat[] = [
   {
     id: "clients",
-    value: "100+",
-    label: "Clients Coached",
+    value: { en: "100+", ar: "+100" },
+    label: { en: "Clients Coached", ar: "متدرّب تم تدريبه" },
   },
   {
     id: "experience",
-    value: "7+",
-    label: "Years of Experience",
+    value: { en: "7+", ar: "+7" },
+    label: { en: "Years of Experience", ar: "سنوات خبرة" },
   },
   {
     id: "completion",
-    value: "90%",
-    label: "Programme Completion",
+    value: { en: "90%", ar: "90%" },
+    label: { en: "Program Completion", ar: "نسبة إكمال البرنامج" },
   },
   {
     id: "response",
-    value: "Within 24 Hours",
-    label: "Support Response",
+    value: { en: "Within 24 Hours", ar: "خلال 24 ساعة" },
+    label: { en: "Support Response", ar: "زمن الرد على استفساراتك" },
   },
 ];

@@ -1,13 +1,19 @@
+"use client";
+
 import { ArrowDown, ChevronDown } from "lucide-react";
 
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { ScrollScrubVideo } from "@/components/shared/ScrollScrubVideo";
 import { ScrubStep, ScrubSteps } from "@/components/shared/ScrubSteps";
 import { InstagramButton } from "@/components/shared/InstagramButton";
 import { scrubMedia, scrubScrollLengths } from "@/config/site";
 import { heroBenefits } from "@/data/hero";
+import { ui } from "@/data/ui";
 import { buttonClass, eyebrowClass } from "@/lib/ui";
 
 export function HeroScrubSection() {
+  const { t } = useLanguage();
+
   return (
     <section id="top" aria-labelledby="hero-title" className="relative">
       <ScrollScrubVideo
@@ -20,7 +26,8 @@ export function HeroScrubSection() {
         scrim={
           <div aria-hidden="true" className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-b from-canvas/90 via-canvas/55 to-canvas" />
-            <div className="absolute inset-0 bg-gradient-to-r from-canvas/80 via-transparent to-transparent" />
+            {/* Darkens the side the copy sits on, so it flips with `dir`. */}
+            <div className="absolute inset-0 bg-gradient-to-r from-canvas/80 via-transparent to-transparent rtl:bg-gradient-to-l" />
           </div>
         }
       >
@@ -28,26 +35,25 @@ export function HeroScrubSection() {
           {/* Opening frame */}
           <ScrubStep align="center">
             <div className="flex w-full max-w-3xl flex-col items-start gap-4 sm:gap-6">
-              <span className={eyebrowClass}>1:1 Online Fitness Coaching</span>
+              <span className={eyebrowClass}>{t(ui.hero.eyebrow)}</span>
 
               <h1
                 id="hero-title"
                 className="text-display font-extrabold text-balance-tight"
               >
-                Build a Stronger Body.
+                {t(ui.hero.titleLead)}
                 <span className="block text-accent">
-                  Create Lasting Progress.
+                  {t(ui.hero.titleAccent)}
                 </span>
               </h1>
 
               <p className="text-lede max-w-xl text-ink/80">
-                Personalised training, practical nutrition guidance and
-                consistent accountability built around your goals and lifestyle.
+                {t(ui.hero.lede)}
               </p>
 
               <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
                 <InstagramButton
-                  label="Start Coaching"
+                  label={t(ui.hero.primaryCta)}
                   size="lg"
                   variant="accent"
                   className="w-full sm:w-auto"
@@ -59,7 +65,7 @@ export function HeroScrubSection() {
                   href="#plans"
                   className={buttonClass("outline", "lg", "w-full sm:w-auto")}
                 >
-                  Explore Plans
+                  {t(ui.hero.secondaryCta)}
                   <ArrowDown aria-hidden="true" className="size-4" />
                 </a>
               </div>
@@ -68,7 +74,7 @@ export function HeroScrubSection() {
                   every pixel for the heading, copy and CTAs. */}
               <p className="scroll-cue mt-1 flex items-center gap-2 text-xs font-semibold tracking-[0.16em] text-muted uppercase max-[380px]:hidden">
                 <ChevronDown aria-hidden="true" className="size-4" />
-                Scroll to explore
+                {t(ui.hero.scrollCue)}
               </p>
             </div>
           </ScrubStep>
@@ -81,9 +87,9 @@ export function HeroScrubSection() {
                   {`0${index + 1}`}
                 </span>
                 <h2 className="text-headline font-extrabold text-balance-tight">
-                  {benefit.title}
+                  {t(benefit.title)}
                 </h2>
-                <p className="text-lede text-ink/80">{benefit.description}</p>
+                <p className="text-lede text-ink/80">{t(benefit.description)}</p>
               </div>
             </ScrubStep>
           ))}
@@ -92,14 +98,11 @@ export function HeroScrubSection() {
           <ScrubStep align="center">
             <div className="flex w-full max-w-2xl flex-col items-start gap-5">
               <h2 className="text-headline font-extrabold text-balance-tight">
-                Your Plan. Your Progress. Your Coach.
+                {t(ui.hero.closingTitle)}
               </h2>
-              <p className="text-lede text-ink/80">
-                Stop guessing and start following a clear coaching system
-                designed to help you train with purpose.
-              </p>
+              <p className="text-lede text-ink/80">{t(ui.hero.closingLede)}</p>
               <InstagramButton
-                label="Chat with Your Coach"
+                label={t(ui.hero.closingCta)}
                 size="lg"
                 className="w-full sm:w-auto"
               />

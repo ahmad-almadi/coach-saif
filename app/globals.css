@@ -21,6 +21,10 @@
 
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", sans-serif;
+  /* Manrope has no Arabic coverage, so the Arabic side of the site needs its
+     own face to keep the display weights the headings rely on. */
+  --font-arabic: var(--font-cairo), "Segoe UI", ui-sans-serif, system-ui,
+    sans-serif;
 
   --radius-card: 1.25rem;
 
@@ -63,6 +67,31 @@
     overflow-x: clip;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
+  }
+
+  /* Arabic typography. Keyed off `dir` rather than `lang` so anything the
+     layout marks as RTL picks up the face, and set on `body` so it overrides
+     the `font-sans` default without redefining the theme token. */
+  html[dir="rtl"] body {
+    font-family: var(--font-arabic);
+  }
+
+  /* Letter-spacing is a Latin display device. Arabic is a joined script, so
+     both the negative tracking on the headings and the wide tracking on the
+     eyebrows and labels pull the letterforms apart. Reset across the tree
+     because the values arrive from many different utilities. */
+  html[dir="rtl"] * {
+    letter-spacing: normal;
+  }
+
+  /* Arabic occupies a taller vertical band than Latin: diacritics sit above the
+     ascenders and several letters drop well below the baseline, so the tight
+     display leading makes consecutive heading lines collide. Overridden on the
+     `dir` selector, which outranks the `:root` theme block, so the Latin side
+     keeps its compact display rhythm. */
+  html[dir="rtl"] {
+    --text-display--line-height: 1.35;
+    --text-headline--line-height: 1.4;
   }
 
   ::selection {
@@ -311,7 +340,9 @@
 .floating-cta {
   position: fixed;
   z-index: 50;
-  right: max(1rem, env(safe-area-inset-right));
+  /* Logical inset: the button sits in the bottom corner the reading direction
+     ends on, so it flips to the left in Arabic. */
+  inset-inline-end: max(1rem, env(safe-area-inset-right));
   bottom: max(1rem, env(safe-area-inset-bottom));
   display: flex;
   align-items: center;
@@ -377,6 +408,17 @@
   max-width: 72rem;
   margin-inline: auto;
   margin-top: clamp(2rem, 6vw, 3rem);
+}
+
+/* The progress bar is scaled on the X axis from JavaScript, so its origin has
+   to sit on the edge the reading direction starts from. `transform-origin` has
+   no logical keyword, hence the explicit pair. */
+.method-rail-fill {
+  transform-origin: left center;
+}
+
+html[dir="rtl"] .method-rail-fill {
+  transform-origin: right center;
 }
 
 .method-stage {

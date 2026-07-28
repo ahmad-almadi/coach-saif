@@ -1,18 +1,24 @@
+"use client";
+
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { Reveal } from "@/components/shared/Reveal";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { audienceItems } from "@/data/audience";
+import { ui } from "@/data/ui";
 import { cardClass, cardHoverClass } from "@/lib/ui";
 import { cn } from "@/lib/cn";
 
 export function AudienceSection() {
+  const { t } = useLanguage();
+
   return (
     <section aria-labelledby="audience-title" className="relative bg-canvas">
       <div className="shell py-16 sm:py-20 lg:py-24">
         <SectionHeading
           id="audience-title"
-          eyebrow="Who it is for"
-          title="Coaching Designed for Real Life"
-          description="This programme is built for people who want a clear plan, professional support and a realistic way to make progress."
+          eyebrow={t(ui.audience.eyebrow)}
+          title={t(ui.audience.title)}
+          description={t(ui.audience.description)}
         />
 
         <Reveal
@@ -37,15 +43,15 @@ export function AudienceSection() {
                 </span>
 
                 <h3 className="text-lg font-bold tracking-tight">
-                  {item.title}
+                  {t(item.title)}
                 </h3>
 
                 <p className="text-sm leading-relaxed text-muted">
-                  {item.problem}
+                  {t(item.problem)}
                 </p>
 
                 <p className="mt-auto border-t border-line pt-3 text-sm leading-relaxed text-ink/85">
-                  {item.solution}
+                  {t(item.solution)}
                 </p>
               </article>
             );

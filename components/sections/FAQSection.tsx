@@ -1,9 +1,15 @@
+"use client";
+
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { FAQAccordion } from "@/components/sections/FAQAccordion";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { InstagramButton } from "@/components/shared/InstagramButton";
 import { faqItems } from "@/data/faq";
+import { ui } from "@/data/ui";
 
 export function FAQSection() {
+  const { t } = useLanguage();
+
   return (
     <section
       id="faq"
@@ -15,13 +21,13 @@ export function FAQSection() {
           <div className="flex flex-col gap-5 lg:sticky lg:top-28 lg:self-start">
             <SectionHeading
               id="faq-title"
-              eyebrow="Questions"
-              title="Everything You Need to Know"
-              description="If your question is not answered here, send a message and you will get a straight answer before committing to anything."
+              eyebrow={t(ui.faq.eyebrow)}
+              title={t(ui.faq.title)}
+              description={t(ui.faq.description)}
             />
 
             <InstagramButton
-              label="Ask a Question"
+              label={t(ui.faq.cta)}
               variant="outline"
               className="self-start"
             />

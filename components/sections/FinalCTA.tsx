@@ -1,10 +1,16 @@
+"use client";
+
 import { ArrowUpRight } from "lucide-react";
 
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { Reveal } from "@/components/shared/Reveal";
 import { InstagramButton } from "@/components/shared/InstagramButton";
+import { ui } from "@/data/ui";
 import { buttonClass, eyebrowClass } from "@/lib/ui";
 
 export function FinalCTA() {
+  const { t } = useLanguage();
+
   return (
     <section aria-labelledby="final-cta-title" className="relative bg-canvas">
       <div className="shell py-16 sm:py-20 lg:py-24">
@@ -16,24 +22,22 @@ export function FinalCTA() {
           />
 
           <div className="relative flex flex-col items-center gap-6 text-center">
-            <span className={eyebrowClass}>Start today</span>
+            <span className={eyebrowClass}>{t(ui.finalCta.eyebrow)}</span>
 
             <h2
               id="final-cta-title"
               className="text-display max-w-3xl font-extrabold text-balance-tight"
             >
-              Ready to Start Making Real Progress?
+              {t(ui.finalCta.title)}
             </h2>
 
             <p className="text-lede max-w-2xl text-muted">
-              Send a message about your goals, training experience and current
-              challenges. Your coach will help you choose the most suitable
-              package.
+              {t(ui.finalCta.lede)}
             </p>
 
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
               <InstagramButton
-                label="Message on Instagram"
+                label={t(ui.finalCta.primaryCta)}
                 size="lg"
                 className="w-full sm:w-auto"
               />
@@ -42,15 +46,16 @@ export function FinalCTA() {
                 href="#plans"
                 className={buttonClass("outline", "lg", "w-full sm:w-auto")}
               >
-                View Coaching Plans
-                <ArrowUpRight aria-hidden="true" className="size-4" />
+                {t(ui.finalCta.secondaryCta)}
+                {/* Diagonal arrow: mirrored so it still points outward. */}
+                <ArrowUpRight
+                  aria-hidden="true"
+                  className="size-4 rtl:-scale-x-100"
+                />
               </a>
             </div>
 
-            <p className="text-sm text-muted">
-              No pressure and no complicated forms. Start with a simple
-              conversation.
-            </p>
+            <p className="text-sm text-muted">{t(ui.finalCta.footnote)}</p>
           </div>
         </Reveal>
       </div>

@@ -1,12 +1,18 @@
+"use client";
+
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { Reveal } from "@/components/shared/Reveal";
 import { trustStats } from "@/data/statistics";
+import { ui } from "@/data/ui";
 import { cardClass } from "@/lib/ui";
 import { cn } from "@/lib/cn";
 
 export function TrustStats() {
+  const { t } = useLanguage();
+
   return (
     <section
-      aria-label="Coaching at a glance"
+      aria-label={t(ui.trustStats.sectionLabel)}
       className="relative border-y border-line bg-surface/60"
     >
       <div className="shell py-12 sm:py-14">
@@ -22,10 +28,10 @@ export function TrustStats() {
               className={cn(cardClass, "flex flex-col gap-1.5 p-4 sm:p-6")}
             >
               <span className="text-xl font-extrabold tracking-tight text-accent text-balance-tight sm:text-2xl lg:text-3xl">
-                {stat.value}
+                {t(stat.value)}
               </span>
               <span className="text-sm font-semibold text-ink sm:text-base">
-                {stat.label}
+                {t(stat.label)}
               </span>
             </div>
           ))}

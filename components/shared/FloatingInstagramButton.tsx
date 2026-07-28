@@ -1,20 +1,27 @@
+"use client";
+
 import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { useLanguage } from "@/components/providers/LanguageProvider";
+import { ui } from "@/data/ui";
 import { buildInstagramUrl } from "@/lib/instagram";
 
 /**
  * Persistent Instagram entry point. Kept as a plain anchor with a CSS entrance
- * animation so it needs no client-side JavaScript.
+ * animation so it needs no client-side JavaScript beyond the language lookup.
  */
 export function FloatingInstagramButton() {
+  const { t } = useLanguage();
+
   return (
     <div className="floating-cta group">
+      {/* Slides in from the side the button sits on, which flips with `dir`. */}
       <span
         aria-hidden="true"
-        className="pointer-events-none hidden translate-x-2 rounded-full border border-line bg-surface/95 px-4 py-2 text-sm font-semibold whitespace-nowrap text-ink opacity-0 shadow-lg transition-[opacity,transform] duration-200 group-hover:translate-x-0 group-hover:opacity-100 md:block"
+        className="pointer-events-none hidden translate-x-2 rounded-full border border-line bg-surface/95 px-4 py-2 text-sm font-semibold whitespace-nowrap text-ink opacity-0 shadow-lg transition-[opacity,transform] duration-200 group-hover:translate-x-0 group-hover:opacity-100 md:block rtl:-translate-x-2 rtl:group-hover:translate-x-0"
       >
-        Message your coach
+        {t(ui.floatingCta.label)}
       </span>
 
       {/* Slightly smaller on phones so it covers less of the content it floats
@@ -34,7 +41,7 @@ export function FloatingInstagramButton() {
           className="text-[1.75rem] sm:text-[2.125rem]"
         />
         <span className="sr-only">
-          Message your coach on Instagram (opens in a new tab)
+          {`${t(ui.floatingCta.srLabel)}${t(ui.common.opensNewTab)}`}
         </span>
       </a>
     </div>

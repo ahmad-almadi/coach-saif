@@ -1,9 +1,15 @@
+"use client";
+
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { Reveal } from "@/components/shared/Reveal";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { TestimonialCard } from "@/components/sections/TestimonialCard";
 import { testimonials } from "@/data/testimonials";
+import { ui } from "@/data/ui";
 
 export function Testimonials() {
+  const { t } = useLanguage();
+
   return (
     <section
       aria-labelledby="testimonials-title"
@@ -12,9 +18,9 @@ export function Testimonials() {
       <div className="shell py-16 sm:py-20 lg:py-24">
         <SectionHeading
           id="testimonials-title"
-          eyebrow="In their words"
-          title="What Coaching Feels Like Week to Week"
-          description="Feedback focuses on the part that matters most: being able to follow the plan consistently and knowing what to do next."
+          eyebrow={t(ui.testimonials.eyebrow)}
+          title={t(ui.testimonials.title)}
+          description={t(ui.testimonials.description)}
         />
 
         <Reveal

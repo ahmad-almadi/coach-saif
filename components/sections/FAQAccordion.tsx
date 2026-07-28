@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { cn } from "@/lib/cn";
 import type { FaqItem } from "@/types";
 
@@ -15,6 +16,7 @@ interface FAQAccordionProps {
  * GSAP, and only the open panel is exposed to assistive technology.
  */
 export function FAQAccordion({ items }: FAQAccordionProps) {
+  const { t } = useLanguage();
   const [openId, setOpenId] = useState<string | null>(items[0]?.id ?? null);
 
   return (
@@ -31,10 +33,10 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
                 aria-expanded={isOpen}
                 aria-controls={`faq-panel-${item.id}`}
                 onClick={() => setOpenId(isOpen ? null : item.id)}
-                className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left transition-colors duration-200 hover:bg-white/[0.03] sm:px-6"
+                className="flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-5 text-start transition-colors duration-200 hover:bg-white/[0.03] sm:px-6"
               >
                 <span className="text-base font-semibold tracking-tight text-ink">
-                  {item.question}
+                  {t(item.question)}
                 </span>
 
                 <Plus
@@ -55,7 +57,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
               className="px-5 pb-5 sm:px-6"
             >
               <p className="max-w-3xl text-sm leading-relaxed text-muted">
-                {item.answer}
+                {t(item.answer)}
               </p>
             </div>
           </div>

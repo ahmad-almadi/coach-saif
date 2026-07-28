@@ -1,5 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 
+import type { Localized } from "@/lib/i18n";
+
 /* ------------------------------------------------------------------ */
 /* Pricing                                                            */
 /* ------------------------------------------------------------------ */
@@ -10,8 +12,8 @@ type PlanId = "starter" | "transformation" | "elite";
 
 export interface PricingPlan {
   id: PlanId;
-  name: string;
-  description: string;
+  name: Localized<string>;
+  description: Localized<string>;
   /** Monthly price in Jordanian dinars. */
   monthlyPrice: number;
   /**
@@ -19,9 +21,9 @@ export interface PricingPlan {
    * Leave undefined to fall back to the configured three-month discount.
    */
   quarterlyPrice?: number;
-  features: string[];
-  ctaLabel: string;
-  badge?: string;
+  features: Localized<string[]>;
+  ctaLabel: Localized<string>;
+  badge?: Localized<string>;
   featured?: boolean;
 }
 
@@ -44,41 +46,43 @@ export interface PlanPricing {
 
 export interface TrustStat {
   id: string;
-  value: string;
-  label: string;
+  /** Localised because not every figure is numeric, e.g. "Within 24 hours". */
+  value: Localized<string>;
+  label: Localized<string>;
 }
 
 export interface CoachingFeature {
   id: string;
-  title: string;
-  description: string;
+  title: Localized<string>;
+  description: Localized<string>;
   icon: LucideIcon;
 }
 
 export interface AudienceItem {
   id: string;
-  title: string;
-  problem: string;
-  solution: string;
+  title: Localized<string>;
+  problem: Localized<string>;
+  solution: Localized<string>;
   icon: LucideIcon;
 }
 
 export interface MethodStage {
   id: string;
+  /** Kept flat: the step number reads the same in both languages. */
   step: string;
-  label: string;
-  heading: string;
-  description: string;
+  label: Localized<string>;
+  heading: Localized<string>;
+  description: Localized<string>;
 }
 
 type TransformationCategory = "strength" | "weight loss" | "lifestyle";
 
 export interface Transformation {
   id: string;
-  name: string;
-  duration: string;
-  result: string;
-  testimonial: string;
+  name: Localized<string>;
+  duration: Localized<string>;
+  result: Localized<string>;
+  testimonial: Localized<string>;
   category: TransformationCategory;
   /** Set to a real, approved image path to replace the placeholder panel. */
   beforeImage: string | null;
@@ -87,33 +91,33 @@ export interface Transformation {
 
 export interface Testimonial {
   id: string;
-  name: string;
-  duration: string;
-  quote: string;
-  /** 1â€“5. Only use ratings that clients actually gave. */
+  name: Localized<string>;
+  duration: Localized<string>;
+  quote: Localized<string>;
+  /** 1-5. Only use ratings that clients actually gave. */
   rating: number;
 }
 
 export interface FaqItem {
   id: string;
-  question: string;
-  answer: string;
+  question: Localized<string>;
+  answer: Localized<string>;
 }
 
 export interface NavLink {
-  label: string;
+  label: Localized<string>;
   href: string;
 }
 
 export interface CoachProfile {
-  name: string;
-  role: string;
-  yearsOfExperience: string;
-  qualifications: string[];
-  intro: string;
-  philosophy: string[];
+  name: Localized<string>;
+  role: Localized<string>;
+  yearsOfExperience: Localized<string>;
+  qualifications: Localized<string[]>;
+  intro: Localized<string>;
+  philosophy: Localized<string[]>;
   image: string | null;
-  imageAlt: string;
+  imageAlt: Localized<string>;
 }
 
 /* ------------------------------------------------------------------ */

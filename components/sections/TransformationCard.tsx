@@ -1,6 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import { ImageOff } from "lucide-react";
 
+import { useLanguage } from "@/components/providers/LanguageProvider";
+import { ui } from "@/data/ui";
+import { fill } from "@/lib/i18n";
 import { cardClass, cardHoverClass } from "@/lib/ui";
 import { cn } from "@/lib/cn";
 import type { Transformation } from "@/types";
@@ -10,7 +15,7 @@ interface TransformationCardProps {
 }
 
 interface ProgressPanelProps {
-  label: "Before" | "After";
+  label: string;
   src: string | null;
   alt: string;
 }
@@ -36,7 +41,7 @@ function ProgressPanel({ label, src, alt }: ProgressPanelProps) {
         </div>
       )}
 
-      <figcaption className="absolute top-2 left-2 rounded-full border border-line bg-black/55 px-2.5 py-1 text-[0.65rem] font-semibold tracking-[0.12em] text-ink uppercase backdrop-blur-[2px]">
+      <figcaption className="absolute top-2 start-2 rounded-full border border-line bg-black/55 px-2.5 py-1 text-[0.65rem] font-semibold tracking-[0.12em] text-ink uppercase backdrop-blur-[2px]">
         {label}
       </figcaption>
     </figure>
@@ -44,39 +49,41 @@ function ProgressPanel({ label, src, alt }: ProgressPanelProps) {
 }
 
 export function TransformationCard({ transformation }: TransformationCardProps) {
+  const { t } = useLanguage();
+  const name = t(transformation.name);
+  const duration = t(transformation.duration);
+
   return (
     <article
       className={cn(cardClass, cardHoverClass, "flex w-full flex-col gap-4 p-5")}
     >
       <div className="grid grid-cols-2 gap-2">
         <ProgressPanel
-          label="Before"
+          label={t(ui.transformations.before)}
           src={transformation.beforeImage}
-          alt={`${transformation.name} before coaching`}
+          alt={fill(t(ui.transformations.beforeAlt), { name })}
         />
         <ProgressPanel
-          label="After"
+          label={t(ui.transformations.after)}
           src={transformation.afterImage}
-          alt={`${transformation.name} after ${transformation.duration} of coaching`}
+          alt={fill(t(ui.transformations.afterAlt), { name, duration })}
         />
       </div>
 
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <h3 className="text-base font-bold tracking-tight">
-          {transformation.name}
-        </h3>
-        <span className="text-xs text-muted">{transformation.duration}</span>
-        <span className="ml-auto rounded-full border border-line bg-white/[0.04] px-2.5 py-1 text-[0.65rem] font-semibold tracking-[0.12em] text-muted uppercase">
-          {transformation.category}
+        <h3 className="text-base font-bold tracking-tight">{name}</h3>
+        <span className="text-xs text-muted">{duration}</span>
+        <span className="ms-auto rounded-full border border-line bg-white/[0.04] px-2.5 py-1 text-[0.65rem] font-semibold tracking-[0.12em] text-muted uppercase">
+          {t(ui.transformations.categories[transformation.category])}
         </span>
       </div>
 
       <p className="text-sm leading-relaxed text-ink/85">
-        {transformation.result}
+        {t(transformation.result)}
       </p>
 
       <blockquote className="mt-auto border-t border-line pt-3 text-sm leading-relaxed text-muted">
-        {transformation.testimonial}
+        {t(transformation.testimonial)}
       </blockquote>
     </article>
   );

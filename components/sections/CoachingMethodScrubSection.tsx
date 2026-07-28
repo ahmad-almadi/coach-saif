@@ -2,16 +2,20 @@
 
 import { useCallback, useRef } from "react";
 
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { ScrollScrubVideo } from "@/components/shared/ScrollScrubVideo";
 import { ScrubStep, ScrubSteps } from "@/components/shared/ScrubSteps";
 import { InstagramButton } from "@/components/shared/InstagramButton";
 import { scrubMedia, scrubScrollLengths } from "@/config/site";
 import { methodStages } from "@/data/method";
+import { ui } from "@/data/ui";
+import { fill } from "@/lib/i18n";
 import { eyebrowClass } from "@/lib/ui";
 
 const stageCount = methodStages.length;
 
 export function CoachingMethodScrubSection() {
+  const { t } = useLanguage();
   const fillRef = useRef<HTMLSpanElement | null>(null);
   const itemsRef = useRef<Array<HTMLLIElement | null>>([]);
   const activeIndexRef = useRef(-1);
@@ -21,10 +25,10 @@ export function CoachingMethodScrubSection() {
    * out of React state avoids a re-render on every scroll frame.
    */
   const handleProgress = useCallback((progress: number) => {
-    const fill = fillRef.current;
+    const bar = fillRef.current;
 
-    if (fill) {
-      fill.style.transform = `scaleX(${Math.min(Math.max(progress, 0), 1)})`;
+    if (bar) {
+      bar.style.transform = `scaleX(${Math.min(Math.max(progress, 0), 1)})`;
     }
 
     const nextIndex = Math.min(
@@ -58,7 +62,8 @@ export function CoachingMethodScrubSection() {
         scrim={
           <div aria-hidden="true" className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-b from-canvas via-canvas/60 to-canvas" />
-            <div className="absolute inset-0 bg-gradient-to-r from-canvas/85 via-canvas/25 to-transparent" />
+            {/* Darkens the side the copy sits on, so it flips with `dir`. */}
+            <div className="absolute inset-0 bg-gradient-to-r from-canvas/85 via-canvas/25 to-transparent rtl:bg-gradient-to-l" />
           </div>
         }
       >
@@ -67,7 +72,10 @@ export function CoachingMethodScrubSection() {
             <ScrubStep key={stage.id} align="center">
               <div className="flex w-full max-w-2xl flex-col items-start gap-4">
                 <span className={eyebrowClass}>
-                  {`Step ${stage.step} · ${stage.label}`}
+                  {fill(t(ui.method.stageEyebrow), {
+                    step: stage.step,
+                    label: t(stage.label),
+                  })}
                 </span>
 
                 {index === 0 ? (
@@ -75,19 +83,19 @@ export function CoachingMethodScrubSection() {
                     id="coaching-title"
                     className="text-headline font-extrabold text-balance-tight"
                   >
-                    {stage.heading}
+                    {t(stage.heading)}
                   </h2>
                 ) : (
                   <h3 className="text-headline font-extrabold text-balance-tight">
-                    {stage.heading}
+                    {t(stage.heading)}
                   </h3>
                 )}
 
-                <p className="text-lede text-ink/80">{stage.description}</p>
+                <p className="text-lede text-ink/80">{t(stage.description)}</p>
 
                 {index === stageCount - 1 ? (
                   <InstagramButton
-                    label="Ask About the Process"
+                    label={t(ui.method.cta)}
                     size="lg"
                     className="mt-1 w-full sm:w-auto"
                   />
@@ -104,9 +112,11 @@ export function CoachingMethodScrubSection() {
             aria-hidden="true"
             className="relative mb-4 block h-px w-full overflow-hidden bg-white/15"
           >
+            {/* `origin-*` is physical, so the fill is anchored to the start edge
+                through CSS in globals.css instead of a utility here. */}
             <span
               ref={fillRef}
-              className="absolute inset-0 block origin-left scale-x-0 bg-accent"
+              className="method-rail-fill absolute inset-0 block scale-x-0 bg-accent"
             />
           </span>
 
@@ -124,7 +134,7 @@ export function CoachingMethodScrubSection() {
                   {stage.step}
                 </span>
                 <span className="text-sm font-semibold text-ink sm:text-base">
-                  {stage.label}
+                  {t(stage.label)}
                 </span>
               </li>
             ))}
